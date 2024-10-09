@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TinyUrl.GenerationService.Infrastructure\TinyUrl.GenerationService.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
