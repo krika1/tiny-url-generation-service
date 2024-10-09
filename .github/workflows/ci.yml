@@ -1,0 +1,28 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v2
+
+    - name: Restore dependencies
+      run: dotnet restore ./TinyUrl.GenerationService/TinyUrl.GenerationService.sln
+
+    - name: Build the project
+      run: dotnet build ./TinyUrl.GenerationService/TinyUrl.GenerationService.sln --configuration Release --no-restore
+
+    - name: Run unit tests
+      run: dotnet test ./TinyUrl.GenerationService/TinyUrl.GenerationService.UnitTests/TinyUrl.GenerationService.UnitTests.csproj --configuration Release --no-build
