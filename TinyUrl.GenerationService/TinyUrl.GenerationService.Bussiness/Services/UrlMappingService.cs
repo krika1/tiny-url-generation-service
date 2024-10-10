@@ -65,7 +65,7 @@ namespace TinyUrl.GenerationService.Bussiness.Services
 
         private string AttachBaseUrl(string hashedUrl)
         {
-            return $"https://short.url/{hashedUrl}";
+            return $"https://localhost:7111/{hashedUrl}";
         }
     }
 }
