@@ -5,6 +5,6 @@ namespace TinyUrl.GenerationService.Infrastructure.Services
 {
     public interface IUrlMappingService
     {
-        Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request);
+        Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId);
     }
 }
