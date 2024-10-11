@@ -1,10 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using TinyUrl.GenerationService.Infrastructure.Clients;
-using TinyUrl.GenerationService.Infrastructure.Common;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Requests;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Responses;
-using TinyUrl.GenerationService.Infrastructure.Exceptions;
 using TinyUrl.GenerationService.Infrastructure.Mappings;
 using TinyUrl.GenerationService.Infrastructure.Repositories;
 using TinyUrl.GenerationService.Infrastructure.Services;
@@ -15,12 +12,10 @@ namespace TinyUrl.GenerationService.Bussiness.Services
     {
         private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         private readonly IUrlMappingRepository _urlMappingRepository;
-        private readonly IUserServiceClient _userClient;
 
-        public UrlMappingService(IUrlMappingRepository urlMappingRepository, IUserServiceClient userClient)
+        public UrlMappingService(IUrlMappingRepository urlMappingRepository)
         {
             _urlMappingRepository = urlMappingRepository;
-            _userClient = userClient;
         }
 
         public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)

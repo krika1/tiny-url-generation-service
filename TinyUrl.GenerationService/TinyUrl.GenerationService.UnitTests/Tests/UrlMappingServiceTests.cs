@@ -1,10 +1,8 @@
 ﻿using Moq;
 using TinyUrl.GenerationService.Bussiness.Services;
-using TinyUrl.GenerationService.Infrastructure.Clients;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Requests;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Responses;
 using TinyUrl.GenerationService.Infrastructure.Entities;
-using TinyUrl.GenerationService.Infrastructure.Exceptions;
 using TinyUrl.GenerationService.Infrastructure.Repositories;
 
 namespace TinyUrl.GenerationService.UnitTests.Tests
@@ -12,14 +10,12 @@ namespace TinyUrl.GenerationService.UnitTests.Tests
     public class UrlMappingServiceTests
     {
         private readonly Mock<IUrlMappingRepository> _mockUrlMappingRepository;
-        private readonly Mock<IUserServiceClient> _mockUserServiceClient;
         private readonly UrlMappingService _urlMappingService;
 
         public UrlMappingServiceTests()
         {
             _mockUrlMappingRepository = new Mock<IUrlMappingRepository>();
-            _mockUserServiceClient = new Mock<IUserServiceClient>();
-            _urlMappingService = new UrlMappingService(_mockUrlMappingRepository.Object, _mockUserServiceClient.Object);
+            _urlMappingService = new UrlMappingService(_mockUrlMappingRepository.Object);
         }
 
         [Fact]
