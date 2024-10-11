@@ -22,6 +22,11 @@ namespace TinyUrl.GenerationService.Bussiness.Services
 
         public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)
         {
+            if (request.ExpiryDate.HasValue && request.ExpiryDate.Value <= DateTime.Now)
+            {
+                throw new BadRequestException(ErrorMessages.BadDateTimeFormatErrorMessage);
+            }
+
             var shortUrl = GenerateShortUrl(request.LongUrl!);
 
             if (await IsShortUrlDublicatedAsync(shortUrl))

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TinyUrl.GenerationService.Infrastructure.Common;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Requests;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Responses;
+using TinyUrl.GenerationService.Infrastructure.Exceptions;
 using TinyUrl.GenerationService.Infrastructure.Services;
 
 namespace TinyUrl.GenerationService.Controllers
@@ -23,7 +24,6 @@ namespace TinyUrl.GenerationService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UrlMappingContract>> ShortenUrlAsync([FromBody] ShortenUrlRequest request)
         {
@@ -34,6 +34,15 @@ namespace TinyUrl.GenerationService.Controllers
                 var shortenedUrl = await _urlMappingService.ShortenUrlAsync(request, int.Parse(currentUser)).ConfigureAwait(false);
 
                 return Ok(shortenedUrl);
+            }
+            catch (BadRequestException ex)
+            {
+                var error = new ErrorContract(StatusCodes.Status400BadRequest, ex.Message, ErrorTitles.PostShortenUrlFailedErrorTitle);
+
+                return new ObjectResult(error)
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
             }
             catch (Exception ex)
             {
