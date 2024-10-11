@@ -8,7 +8,7 @@ namespace TinyUrl.GenerationService.Infrastructure.Mappings
     {
         public static UrlMapping ToDomain(ShortenUrlRequest request)
         {
-            return new UrlMapping { LongUrl = request.LongUrl, Clicks = 0, CreationDate = DateTime.Now, UserId = request.UserId };
+            return new UrlMapping { LongUrl = request.LongUrl, Clicks = 0, CreationDate = DateTime.Now};
         }
 
         public static UrlMappingContract ToContract(UrlMapping urlMapping)

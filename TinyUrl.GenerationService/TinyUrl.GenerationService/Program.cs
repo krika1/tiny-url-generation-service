@@ -1,6 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.Text;
 using TinyUrl.GenerationService.Bussiness.Services;
 using TinyUrl.GenerationService.Data.Clients;
 using TinyUrl.GenerationService.Data.Repositories;
@@ -43,6 +45,23 @@ namespace TinyUrl.GenerationService
             builder.Services.Configure<UserClientOptions>(
                  builder.Configuration.GetSection("UserClientOptions"));
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                            .AddJwtBearer(options =>
+                            {
+                                options.TokenValidationParameters = new TokenValidationParameters
+                                {
+                                    ValidateLifetime = true,
+                                    ValidateIssuerSigningKey = true,
+                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")),
+                                    ValidateIssuer = false,
+                                    ValidateAudience = false
+                                };
+                            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -54,9 +73,8 @@ namespace TinyUrl.GenerationService
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

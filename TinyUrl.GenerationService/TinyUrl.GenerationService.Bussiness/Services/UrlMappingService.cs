@@ -23,15 +23,13 @@ namespace TinyUrl.GenerationService.Bussiness.Services
             _userClient = userClient;
         }
 
-        public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request)
-        {
-            var user = await _userClient.GetUserByIdAsync(request.UserId).ConfigureAwait(false)
-                ?? throw new NotFoundException(ErrorMessages.UserNotFoundErrorMessage);
-
+        public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)
+        { 
             var shortUrl = GenerateShortUrl(request.LongUrl!);
 
             var urlMapping = UrlMappingMapping.ToDomain(request);
             urlMapping.ShortUrl = shortUrl;
+            urlMapping.UserId = userId;
 
             var createdMapping = await _urlMappingRepository.CreateUrlMappingAsyc(urlMapping).ConfigureAwait(false);
 

@@ -4,6 +4,5 @@
     {
         public string? LongUrl { get; set; }
         public DateTime? ExpiryDate { get; set; }
-        public int UserId { get; set; }
     }
 }
