@@ -19,8 +19,13 @@ namespace TinyUrl.GenerationService.Bussiness.Services
         }
 
         public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)
-        { 
+        {
             var shortUrl = GenerateShortUrl(request.LongUrl!);
+            while (await _urlMappingRepository.IsUrlDublicatedAsync(shortUrl).ConfigureAwait(false))
+            {
+                shortUrl = GenerateShortUrl(request.LongUrl! + Guid.NewGuid().ToString());
+            }
+
 
             var urlMapping = UrlMappingMapping.ToDomain(request);
             urlMapping.ShortUrl = shortUrl;
