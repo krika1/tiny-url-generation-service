@@ -1,7 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using TinyUrl.GenerationService.Infrastructure.Common;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Requests;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Responses;
+using TinyUrl.GenerationService.Infrastructure.Exceptions;
 using TinyUrl.GenerationService.Infrastructure.Mappings;
 using TinyUrl.GenerationService.Infrastructure.Repositories;
 using TinyUrl.GenerationService.Infrastructure.Services;
@@ -21,11 +23,11 @@ namespace TinyUrl.GenerationService.Bussiness.Services
         public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)
         {
             var shortUrl = GenerateShortUrl(request.LongUrl!);
-            while (await _urlMappingRepository.IsUrlDublicatedAsync(shortUrl).ConfigureAwait(false))
+
+            if (await IsShortUrlDublicatedAsync(shortUrl))
             {
                 shortUrl = GenerateShortUrl(request.LongUrl! + Guid.NewGuid().ToString());
             }
-
 
             var urlMapping = UrlMappingMapping.ToDomain(request);
             urlMapping.ShortUrl = shortUrl;
@@ -34,6 +36,18 @@ namespace TinyUrl.GenerationService.Bussiness.Services
             var createdMapping = await _urlMappingRepository.CreateUrlMappingAsyc(urlMapping).ConfigureAwait(false);
 
             return UrlMappingMapping.ToContract(createdMapping);
+        }
+
+        public async Task DeleteShortUrlAsync(string shortUrl, int userId)
+        {
+            var urlMapping = await _urlMappingRepository.GetUrlMappingAsync(shortUrl).ConfigureAwait(false);
+
+            if (urlMapping is null ||  urlMapping.UserId != userId)
+            {
+                throw new NotFoundException(ErrorMessages.ShortUrlNotFoundMessage);
+            }
+
+            await _urlMappingRepository.DeleteUrlMapping(shortUrl).ConfigureAwait(false);
         }
 
         private string GenerateShortUrl(string longUrl)
@@ -64,6 +78,13 @@ namespace TinyUrl.GenerationService.Bussiness.Services
         private string AttachBaseUrl(string hashedUrl)
         {
             return $"https://localhost:7111/{hashedUrl}";
+        }
+
+        private async Task<bool> IsShortUrlDublicatedAsync(string generatedShortUrl)
+        {
+            var isExisting = await _urlMappingRepository.GetUrlMappingAsync(generatedShortUrl).ConfigureAwait(false);
+
+            return isExisting is not null;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace TinyUrl.GenerationService.Infrastructure.Repositories
     public interface IUrlMappingRepository
     {
         Task<UrlMapping> CreateUrlMappingAsyc(UrlMapping urlMapping);
-        Task<bool> IsUrlDublicatedAsync(string shortUrl);
+        Task<UrlMapping> GetUrlMappingAsync(string shortUrl);
+        Task DeleteUrlMapping(string shortUrl);
     }
 }
