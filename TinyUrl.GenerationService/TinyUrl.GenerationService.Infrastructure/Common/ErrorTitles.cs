@@ -2,6 +2,7 @@
 {
     public static class ErrorTitles
     {
-        public const string PostShortenUrlFailedErrorTitle = "Shorten Url Failed.";
+        public const string PostShortenUrlFailedErrorTitle = "Shorten Url Failed";
+        public const string DeleteShortenUrlFailedErrorTitle = "Delete Shorten Url Failed";
     }
 }

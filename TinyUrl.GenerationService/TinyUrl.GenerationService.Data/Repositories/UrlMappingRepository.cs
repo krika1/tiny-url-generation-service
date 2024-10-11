@@ -14,11 +14,11 @@ namespace TinyUrl.GenerationService.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<bool> IsUrlDublicatedAsync(string shortUrl)
+        public async Task<UrlMapping> GetUrlMappingAsync(string shortUrl)
         {
-            var mapping = await _dbContext.UrlMappings.Find(um => um.ShortUrl == shortUrl).AnyAsync();
+            var mapping = await _dbContext.UrlMappings.Find(um => um.ShortUrl == shortUrl).FirstOrDefaultAsync();
 
-            return mapping;
+            return mapping!;
         }
 
         public async Task<UrlMapping> CreateUrlMappingAsyc(UrlMapping urlMapping)
@@ -26,6 +26,11 @@ namespace TinyUrl.GenerationService.Data.Repositories
             await _dbContext.UrlMappings.InsertOneAsync(urlMapping);
 
             return urlMapping;
+        }
+
+        public async Task DeleteUrlMapping(string shortUrl)
+        {
+            await _dbContext.UrlMappings.DeleteOneAsync(um => um.ShortUrl == shortUrl);
         }
     }
 }
