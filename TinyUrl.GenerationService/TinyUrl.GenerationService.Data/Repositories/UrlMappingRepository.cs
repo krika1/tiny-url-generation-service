@@ -16,7 +16,7 @@ namespace TinyUrl.GenerationService.Data.Repositories
 
         public async Task<UrlMapping> GetUrlMappingAsync(string shortUrl)
         {
-            var mapping = await _dbContext.UrlMappings.Find(um => um.ShortUrl == shortUrl).FirstOrDefaultAsync();
+            var mapping = await _dbContext.UrlMappings.Find(um => um.ShortUrl!.Contains(shortUrl)).FirstOrDefaultAsync();
 
             return mapping!;
         }
@@ -30,7 +30,7 @@ namespace TinyUrl.GenerationService.Data.Repositories
 
         public async Task DeleteUrlMapping(string shortUrl)
         {
-            await _dbContext.UrlMappings.DeleteOneAsync(um => um.ShortUrl == shortUrl);
+            await _dbContext.UrlMappings.DeleteOneAsync(um => um.ShortUrl!.Contains(shortUrl));
         }
 
         public async Task<IEnumerable<UrlMapping>> GetAllUrlMappings(int userId)

@@ -45,7 +45,7 @@ namespace TinyUrl.GenerationService.Controllers
             }
         }
 
-        [HttpDelete("{url}")]
+        [HttpDelete("urls/{url}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
