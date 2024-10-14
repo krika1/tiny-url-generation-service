@@ -20,6 +20,13 @@ namespace TinyUrl.GenerationService.Bussiness.Services
             _urlMappingRepository = urlMappingRepository;
         }
 
+        public async Task<IEnumerable<UrlMappingContract>> GetAllUrlMappingsAsync(int userId)
+        {
+            var urls = await _urlMappingRepository.GetAllUrlMappings(userId).ConfigureAwait(false);
+
+            return urls.Select(url => UrlMappingMapping.ToContract(url));
+        }
+
         public async Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId)
         {
             if (request.ExpiryDate.HasValue && request.ExpiryDate.Value <= DateTime.Now)

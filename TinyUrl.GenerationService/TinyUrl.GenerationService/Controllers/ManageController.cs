@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TinyUrl.GenerationService.Infrastructure.Common;
-using TinyUrl.GenerationService.Infrastructure.Contracts.Requests;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Responses;
 using TinyUrl.GenerationService.Infrastructure.Exceptions;
 using TinyUrl.GenerationService.Infrastructure.Services;
@@ -20,18 +19,44 @@ namespace TinyUrl.GenerationService.Controllers
             _urlMappingService = urlMappingService;
         }
 
-        [HttpPost("delete")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("urls")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteShortUrlAsync([FromBody] DeleteShortUrlRequest request)
+        public async Task<ActionResult<IEnumerable<UrlMappingContract>>> GetAllUrlsAsync()
         {
             try
             {
                 var currentUser = User.GetUserId();
 
-                await _urlMappingService.DeleteShortUrlAsync(request.ShortUrl!, int.Parse(currentUser)).ConfigureAwait(false);
+                var urls = await _urlMappingService.GetAllUrlMappingsAsync(int.Parse(currentUser)).ConfigureAwait(false);
+
+                return Ok(urls);
+            }
+            catch (Exception ex)
+            {
+                var error = new ErrorContract(StatusCodes.Status500InternalServerError, ex.Message, ErrorTitles.GetAllUrlsFailedErrorTitle);
+
+                return new ObjectResult(error)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                };
+            }
+        }
+
+        [HttpDelete("{url}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteShortUrlAsync([FromRoute] string url)
+        {
+            try
+            {
+                var currentUser = User.GetUserId();
+
+                await _urlMappingService.DeleteShortUrlAsync(url, int.Parse(currentUser)).ConfigureAwait(false);
 
                 return NoContent();
             }
