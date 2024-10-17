@@ -14,10 +14,12 @@ namespace TinyUrl.GenerationService.Controllers
     public class ShortenController : ControllerBase
     {
         private readonly IUrlMappingService _urlMappingService;
+        private readonly ILogger<ShortenController> _logger;
 
-        public ShortenController(IUrlMappingService urlMappingService)
+        public ShortenController(IUrlMappingService urlMappingService, ILogger<ShortenController> logger)
         {
             _urlMappingService = urlMappingService;
+            _logger = logger;
         }
 
         [HttpPost("shorten")]
@@ -37,21 +39,15 @@ namespace TinyUrl.GenerationService.Controllers
             }
             catch (BadRequestException ex)
             {
-                var error = new ErrorContract(StatusCodes.Status400BadRequest, ex.Message, ErrorTitles.PostShortenUrlFailedErrorTitle);
+                _logger.LogError(ex.Message);
 
-                return new ObjectResult(error)
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                };
+                return ObjectResultCreator.To400BadRequest(ex.Message, ErrorTitles.PostShortenUrlFailedErrorTitle);
             }
             catch (Exception ex)
             {
-                var error = new ErrorContract(StatusCodes.Status500InternalServerError, ex.Message, ErrorTitles.PostShortenUrlFailedErrorTitle);
+                _logger.LogError(ex.Message);
 
-                return new ObjectResult(error)
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                };
+                return ObjectResultCreator.To500InternalServerErrorResult(ex.Message, ErrorTitles.PostShortenUrlFailedErrorTitle);
             }
         }
     }

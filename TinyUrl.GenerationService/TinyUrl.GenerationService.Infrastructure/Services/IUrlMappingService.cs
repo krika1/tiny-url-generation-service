@@ -8,5 +8,6 @@ namespace TinyUrl.GenerationService.Infrastructure.Services
         Task<UrlMappingContract> ShortenUrlAsync(ShortenUrlRequest request, int userId);
         Task<IEnumerable<UrlMappingContract>> GetAllUrlMappingsAsync(int userId);
         Task DeleteShortUrlAsync(string shortUrl, int userId);
+        Task SetExpirationDateAsync(UpdateDateExpirationRequest request, string shortUrl, int userId);
     }
 }

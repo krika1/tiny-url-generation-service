@@ -62,6 +62,25 @@ namespace TinyUrl.GenerationService.Bussiness.Services
             await _urlMappingRepository.DeleteUrlMapping(shortUrl).ConfigureAwait(false);
         }
 
+        public async Task SetExpirationDateAsync(UpdateDateExpirationRequest request, string shortUrl, int userId)
+        {
+            var urlMapping = await _urlMappingRepository.GetUrlMappingAsync(shortUrl).ConfigureAwait(false);
+
+            if (urlMapping is null ||  urlMapping.UserId != userId)
+            {
+                throw new NotFoundException(ErrorMessages.ShortUrlNotFoundMessage);
+            }
+
+            if (request.ExpirationDate <= DateTime.Now)
+            {
+                throw new BadRequestException(ErrorMessages.BadDateTimeFormatErrorMessage);
+            }
+
+            urlMapping.ExpirationDate = request.ExpirationDate;
+
+            await _urlMappingRepository.UpdateUrlMapping(urlMapping).ConfigureAwait(false);
+        }
+
         private string GenerateShortUrl(string longUrl)
         {
             string result = string.Empty;

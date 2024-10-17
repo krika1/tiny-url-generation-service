@@ -8,5 +8,6 @@ namespace TinyUrl.GenerationService.Infrastructure.Repositories
         Task<UrlMapping> GetUrlMappingAsync(string shortUrl);
         Task<IEnumerable<UrlMapping>> GetAllUrlMappings(int userId);
         Task DeleteUrlMapping(string shortUrl);
+        Task UpdateUrlMapping(UrlMapping urlMapping);
     }
 }

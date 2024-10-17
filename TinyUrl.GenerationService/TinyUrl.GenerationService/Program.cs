@@ -7,6 +7,7 @@ using TinyUrl.GenerationService.Bussiness.Services;
 using TinyUrl.GenerationService.Data.Repositories;
 using TinyUrl.GenerationService.Infrastructure.Context;
 using TinyUrl.GenerationService.Infrastructure.Contracts.Options;
+using TinyUrl.GenerationService.Infrastructure.Middlewares;
 using TinyUrl.GenerationService.Infrastructure.Repositories;
 using TinyUrl.GenerationService.Infrastructure.Services;
 
@@ -69,6 +70,8 @@ namespace TinyUrl.GenerationService
             }
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<UnauthorizedHandlerMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

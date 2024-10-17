@@ -8,12 +8,12 @@ namespace TinyUrl.GenerationService.Infrastructure.Mappings
     {
         public static UrlMapping ToDomain(ShortenUrlRequest request)
         {
-            return new UrlMapping { LongUrl = request.LongUrl, Clicks = 0, CreationDate = DateTime.Now, ExpirationDate = request.ExpiryDate};
+            return new UrlMapping { LongUrl = request.LongUrl, Clicks = 0, CreationDate = DateTime.Now, ExpirationDate = request.ExpiryDate };
         }
 
         public static UrlMappingContract ToContract(UrlMapping urlMapping)
         {
-            return new UrlMappingContract { LongUrl = urlMapping.LongUrl, ExpiryDate = urlMapping.ExpirationDate, CreatedAt = urlMapping.CreationDate, ShortUrl = urlMapping.ShortUrl };
+            return new UrlMappingContract { LongUrl = urlMapping.LongUrl, ExpiryDate = urlMapping.ExpirationDate, CreatedAt = urlMapping.CreationDate, ShortUrl = urlMapping.ShortUrl, Clicks = urlMapping.Clicks };
         }
     }
 }

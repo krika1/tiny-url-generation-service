@@ -37,7 +37,17 @@ namespace TinyUrl.GenerationService.Data.Repositories
         {
             var urls = await _dbContext.UrlMappings.Find(um => um.UserId == userId).ToListAsync();
 
-            return urls;    
+            return urls;
+        }
+
+        public async Task UpdateUrlMapping(UrlMapping urlMapping)
+        {
+           var filter = Builders<UrlMapping>.Filter.Eq(e => e.Id, urlMapping.Id);
+
+           var update = Builders<UrlMapping>.Update
+               .Set(e => e.ExpirationDate, urlMapping.ExpirationDate);
+
+           await _dbContext.UrlMappings.UpdateOneAsync(filter, update);
         }
     }
 }
